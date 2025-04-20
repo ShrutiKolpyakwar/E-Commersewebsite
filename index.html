@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/ecosoul.jpg" />
+    <title>Organic Store</title>
+    <!-- <style>
+      /* Global Styles */
+    </style> -->
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <!-- <link rel="stylesheet" href="script.js" /> -->
+    <script type="module" src="script1.js" defer></script>
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="script.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.js"></script>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container header-container">
+        <div class="logo">
+          <img src="img/organic-logo.png" alt="Organic Store Logo" />
+          <div class="logo-text">
+            ORGANIC
+            <span>STORE</span>
+          </div>
+        </div>
+
+        <ul class="nav-menu">
+          <li><a href="#Home">Home</a></li>
+          <li><a href="#Products">All Products</a></li>
+          <li><a href="#About">About</a></li>
+          <li><a href="#Contact" class="active">Contact</a></li>
+
+          <li>
+            <a href="account.html">Account <i class="fas fa-chevron-down"></i></a>
+          </li>
+          <li><a href="login.html">Sign in</a></li>
+        </ul>
+
+      <!-- ✅ Cart Icon in Header -->
+<div class="cart-icon" onclick="toggleCart()">
+  <a href="#"><i class="fas fa-shopping-bag"></i></a>
+  <span class="cart-count" id="cart-count">0</span>
+</div>
+
+<!-- ✅ Cart Dropdown Section -->
+<div id="cart-dropdown" class="hidden">
+  <h3>Your Cart</h3>
+  <ul id="cart-items"></ul>
+  <p>Total: ₹<span id="cart-total">0.00</span></p>
+  <button id="checkout-btn" onclick="goToCheckout()">Checkout</button>
+</div>
+
+<!-- ✅ External Checkout Page Modal (could be a separate section) -->
+<div id="checkout-page" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #8bc34a; z-index: 10000; padding: 20px; overflow-y: auto;">
+  <h2>Checkout Summary</h2>
+  <div id="checkout-products"></div>
+  <p style="font-weight: bold">Total: ₹<span id="checkout-total">0.00</span></p>
+  <button onclick="closeCheckout()">Close</button>
+</div>
+
+<!-- ✅ CSS (Add this to style.css) -->
+<style>
+#cart-dropdown {
+  position: absolute;
+  right: 10px;
+  top: 80px;
+  background-color: #8bc34a;
+  border: 1px solid #ccc;
+  width: 260px;
+  padding: 10px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+  z-index: 999;
+  border-radius: 8px;
+}
+
+#cart-dropdown.hidden, #checkout-page.hidden {
+  display: none;
+}
+
+#cart-items, #checkout-products {
+  list-style: none;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#cart-items li, #checkout-products div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+</style>
+
+<!-- ✅ JavaScript (Place at the bottom of script.js) -->
+<script>
+
+  
+let cart = [];
+const cartCount = document.querySelector(".cart-count");
+const cartItems = document.getElementById("cart-items");
+const cartTotal = document.getElementById("cart-total");
+const cartDropdown = document.getElementById("cart-dropdown");
+const cartIcon = document.querySelector(".cart-icon");
+const checkoutPage = document.getElementById("checkout-page");
+const checkoutProducts = document.getElementById("checkout-products");
+const checkoutTotal = document.getElementById("checkout-total");
+
+function toggleCart() {
+  cartDropdown.classList.toggle("hidden");
+}
+
+function addToCart(name, price) {
+  cart.push({ name, price });
+  updateCartUI();
+}
+
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  cartItems.innerHTML = "";
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    total += item.price;
+    let li = document.createElement("li");
+    li.innerHTML = `
+      ${item.name} - ₹${item.price.toFixed(2)}
+      <button onclick="removeFromCart(${index})">❌</button>
+    `;
+    cartItems.appendChild(li);
+  });
+
+  cartCount.textContent = cart.length;
+  cartTotal.textContent = total.toFixed(2);
+}
+
+function goToCheckout() {
+  checkoutProducts.innerHTML = "";
+  let total = 0;
+
+  cart.forEach((item) => {
+    total += item.price;
+    let div = document.createElement("div");
+    div.innerHTML = `${item.name} - ₹${item.price.toFixed(2)}`;
+    checkoutProducts.appendChild(div);
+  });
+
+  checkoutTotal.textContent = total.toFixed(2);
+  checkoutPage.classList.remove("hidden");
+}
+
+function closeCheckout() {
+  checkoutPage.classList.add("hidden");
+}
+</script>
+
+<!-- ✅ Sample Add to Cart Button Example
+<button class="shop-now-btn" onclick="addToCart('Reusable Bags', 25)">Add to Cart 🛒</button>
+<button class="shop-now-btn" onclick="addToCart('Hand Sanitizer', 15)">Add to Cart 🛒</button>
+<button class="shop-now-btn" onclick="addToCart('Eco-Water Bottles', 19)">Add to Cart 🛒</button>
+<button class="shop-now-btn" onclick="addToCart('Bamboo-Products', 15)">Add to Cart 🛒</button>
+<button class="shop-now-btn" onclick="addToCart('Eco-Brush', 15)">Add to Cart 🛒</button>
+<button class="shop-now-btn" onclick="addToCart('FaceWash', 15)">Add to Cart 🛒</button>
+<button class="shop-now-btn" onclick="addToCart('Eco-Soaps', 15)">Add to Cart 🛒</button>
+<button class="shop-now-btn" onclick="addToCart('Natural Extracted Edible Oil', 25)">Add to Cart 🛒</button> -->
+
+  
+  
+  
+  
+  
+ 
+  
+
+
+        <div class="cart-social">
+          <a href="hack/index.html" target="_blank">
+            <ion-icon name="id-card-sharp"></ion-icon>
+          </a>
+        </div>
+
+        <div class="cart-chatbot" >
+          <a href="#CHATBOT">
+            <ion-icon name="chatbox-sharp"></ion-icon>
+          </a>
+        </div>
+
+      </div>
+    </header>
+          
+
+
+
+
+    <!-- Homepage Content -->
+    <section class="hero1" id="Home">
+      <div class="container">
+        <h1>Join The Organic Movement!</h1>
+        <h2>Welcome to GreenWorld Organic Stores!!</h2>
+        
+
+    <div class="search-container">
+        <div class="search-wrapper">
+            <input type="text" class="search-input" placeholder="Search..." autocomplete="off">
+            <button class="clear-button">×</button>
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </div>
+        <div class="results-container">
+            <!-- Results will be dynamically added here -->
+        </div>
+    </div>
+
+        <img src="img/grocery.jpg" alt="Leaf Divider" class="leaf-divider" />
+        <img src="img/g1.avif" alt="Leaf Divider" class="leaf-divider" />
+        <img src="img/g2.avif" alt="Leaf Divider" class="leaf-divider" />
+        <img src="img/g3.avif" alt="Leaf Divider" class="leaf-divider" />
+        <img src="img/g4.avif" alt="Leaf Divider" class="leaf-divider" />
+
+        <p  style="color: white; font-weight: 700; font-size: 18px">
+          Your destination for eco-friendly products
+        </p>
+        <button class="shop-now-btn">Shop Now &rarr;</button>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+      <div class="container features-container">
+        <div class="feature-item">
+          <i class="fas fa-truck"></i>
+          <div>
+            <h4>Free Shipping</h4>
+            <p>Above ₹100</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-certificate"></i>
+          <div>
+            <h4>Certified Organic</h4>
+            <p>100% Guaranteed</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-tags"></i>
+          <div>
+            <h4>Huge Savings</h4>
+            <p>At Lowest Price</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-undo"></i>
+          <div>
+            <h4>Easy Returns</h4>
+            <p>No Questions Asked</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- Products Section -->
+    <section class="products-section" id="Products">
+      <div class="product-container">
+        <h2 class="product-h2">
+          Best Selling Products
+          <!-- <img src="#" alt="Leaf Divider" class="leaf-img" /> -->
+        </h2>
+
+        <div class="products-grid">
+          <div class="product-card">
+            <div class="product-image">
+              <img src="img/reusable-bags.jpg" alt="Eco-Bags" />
+            </div>
+            <div class="product-info">
+              <div class="product-category">Bags</div>
+              <h3 class="product-title">Reusable Bags</h3>
+              <div class="product-price">
+                <span class="price">₹25.00</span>
+                <button class="shop-now-btn" onclick="addToCart('Reusable Bags', 25)">Add to Cart 🛒</button>
+                <button class="shop-now-btn" onclick="saveItem('Reusable Bags', 25)">Save</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image">
+              <img src="img/g5.avif" alt="Hand Sanitizer" />
+            </div>
+            <div class="product-info">
+              <div class="product-category">Health</div>
+              <h3 class="product-title">Hand Sanitizer</h3>
+              <div class="product-price">
+                <span class="price">₹15.00</span>
+                <button class="shop-now-btn" onclick="addToCart('Hand Sanitizer', 15)">Add to Cart 🛒</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image">
+              <img src="img/bottle.jpg" alt="Water Bottles" />
+            </div>
+            <div class="product-info">
+              <div class="product-category">Bottles</div>
+              <h3 class="product-title">Eco-Water Bottles</h3>
+              <div class="product-price">
+                <span class="price">₹19.00</span>
+                <button class="shop-now-btn" onclick="addToCart('Eco-Water Bottles', 19)">Add to Cart 🛒</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image">
+              <img src="img/bamboo.jpg" alt="Eco-Products" />
+            </div>
+            <div class="product-info">
+              <div class="product-category">Health</div>
+              <h3 class="product-title">Bamboo-Products</h3>
+              <div class="product-price">
+                <span class="price">₹15.00</span>
+                <button class="shop-now-btn" onclick="addToCart('Bamboo-Products', 15)">Add to Cart 🛒</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image">
+              <img src="img/g2.avif" alt="Eco-Brush" />
+            </div>
+            <div class="product-info">
+              <div class="product-category">Health</div>
+              <h3 class="product-title">Eco-Brush</h3>
+              <div class="product-price">
+                <span class="price">₹15.00</span>
+                <button class="shop-now-btn" onclick="addToCart('Eco-Brush', 15)">Add to Cart 🛒</button>
+                <span class="old-price">₹20.00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image">
+              <img src="img/facewash.jpg" alt="Eco-Facewash" />
+            </div>
+            <div class="product-info">
+              <div class="product-category">Cosmetics</div>
+              <h3 class="product-title">FaceWash</h3>
+              <div class="product-price">
+                <span class="price">₹15.00</span>
+                <button class="shop-now-btn" onclick="addToCart('FaceWash', 15)">Add to Cart 🛒</button>
+                <span class="old-price">₹30.00</span>
+              </div>
+            </div>
+          </div>
+          <div class="product-card">
+            <div class="product-image">
+              <img src="img/soap.jpg" alt="Eco-Soaps" />
+            </div>
+            <div class="product-info">
+              <div class="product-category">Cosmetics</div>
+              <h3 class="product-title">Eco-Soaps</h3>
+              <div class="product-price">
+                <span class="price">₹15.00</span>
+                <button class="shop-now-btn" onclick="addToCart('Eco-Soaps', 15)">Add to Cart 🛒</button>
+                <span class="old-price">₹25.00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image">
+              <img src="img/oil.jpg" alt="Edible Oil" />
+            </div>
+            <div class="product-info">
+              <div class="product-category">Cooking/Hair-oils</div>
+              <h3 class="product-title">Natural Extracted Edible Oil</h3>
+              <div class="product-price">
+                <span class="price">₹25.00</span>
+                <button class="shop-now-btn" onclick="addToCart('Natural Extracted Edible Oil', 25)">Add to Cart 🛒</button>
+                <span class="old-price">₹32.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories Section -->
+    <p
+    style="
+      color: #333;
+      text-align: center;
+      font-size: 30px;
+      font-weight: 700;
+      margin-top: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    "
+  >
+    Try It For Free. No Registration Needed.
+    <button
+      class="shop-now-btn"
+      style="padding: 20px; margin-bottom: 5px; margin-left: 5px"
+    >
+      Try It &rarr;
+    </button>
+  </p>
+    <section class="categories-section ">
+      
+      <div class="category-card">
+        <img src="img/medine.avif" alt="Medicinal Products" />
+        <h3>Medicinal Products</h3>
+        <p>"Designed to support your health and well-being naturally."</p>
+        <button class="shop-now-btn">Shop Now &rarr;</button>
+      </div>
+
+      <div class="category-card">
+        <img src="img/product2.jpg" alt="HandCraft Eco-Products" />
+        <h3>HandCraft Eco-Products</h3>
+        <p>"Beautifully handmade with love and sustainability in every detail."</p>
+        <button class="shop-now-btn">Shop Now &rarr;</button>
+      </div>
+
+      <div class="category-card">
+        <img src="img/solar-powered-devices.jpg" alt="Solar-powered-Products" />
+        <h3>Solar-powered-Products</h3>
+        <p>"Harness the power of the sun — clean, green, and efficient."</p>
+        <button class="shop-now-btn">Shop Now &rarr;</button>
+      </div>
+
+      <div class="category-card">
+        <img src="img/indowud.png" alt="Indowud Products" />
+        <h3>Indowud Products</h3>
+        <p>"Innovative wood alternatives — strong, sustainable, and stylish."</p>
+        <button class="shop-now-btn">Shop Now &rarr;</button>
+      </div>
+    </section>
+
+    <!-- Promo Section -->
+    <section class="promo-section">
+      <div class="container">
+        <h2>Get 25% Off On Your First Purchase!</h2>
+        <button class="shop-now-btn">Shop Now &rarr;</button>
+      </div>
+    
+    </section>
+
+    
+
+    <!-- More Products Section -->
+    <!-- <section class="products-section">
+      <div class="container">
+        <h2>Trending Products</h2>
+        <img src="#" alt="Leaf Divider" class="leaf-divider" />
+
+        <div class="products-grid">
+          <-- Additional product cards would go here, similar to the ones above -->
+    <!-- </div>
+      </div>
+    </section> -->
+
+
+  <!-- CHATBOT Section -->    
+    
+  <div class="chat-bot-container" id="CHATBOT">
+    <iframe 
+      src="https://dsarthak-myfirstgenaichatbot.hf.space" 
+      frameborder="0"
+      allow="camera; microphone; clipboard-read; clipboard-write"
+      loading="lazy"
+      title="AI Chatbot">
+    </iframe>
+    
+    
+  </div>
+   
+<!-- Reviews Section -->
+    <section class="reviews-section">
+      <div class="container">
+        <h2
+          style="
+            text-align: center;
+            font-size: 50px;
+            font-weight: 700;
+            background-color: #fae7d0;
+            margin: 60px 0;
+            padding: 50px 0;
+            color: #7b4b2a;
+          "
+        >
+          Customer Reviews
+        </h2>
+
+        <!-- <img src="img/leaf.jpg" alt="Leaf Divider" class="leaf-divider" /> -->
+
+        <div class="reviews-container">
+          <div class="review-card">
+            <div class="review-stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <p>
+              "Smooth experience! The site was easy to navigate, and checkout was fast. My order arrived earlier than expected and in perfect condition. I’ll definitely shop again!"
+            </p>
+            <div class="reviewer">
+              <img src="img/customer-2.jpg" alt="Reviewer Avatar" />
+              <h4>Mila Kunis</h4>
+            </div>
+          </div>
+
+          <div class="review-card-special-offer">
+            <h3>Deal Of The Day</h3>
+            <h2>15% Off On All Vegetables!</h2>
+            <p>Fresh and healthy vegetables available now at a discounted price!</p>
+
+            <button class="shop-now-btn">Shop Now &rarr;</button>
+          </div>
+
+          <div class="review-card">
+            <div class="review-stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <p>
+              "Great customer service! I had an issue with a product size and the support team resolved it within a day. Really impressed with their prompt response."
+            </p>
+            <div class="reviewer">
+              <img src="img/customer-4.jpg" alt="Reviewer Avatar" />
+              <h4>Tony Sander</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Us Page Content -->
+    <div class="section-about" id="About">
+      <div class="content-about">
+        <h1>We Are Your Favourite Store.</h1>
+        <video width="100%" height="auto" controls muted>
+          <source src="img/v1.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <h2><strong>How It Works:</strong></h2> <p>EcoSoul is a web platform that combines social media with eco-friendly e-commerce to encourage people to take action for the environment.</p>
+      </div>
+    </div>
+    <div class="section-about">
+      <div class="content-about">
+        <div class="social-media">
+          <h2><strong>Social Media Side</strong></h2>
+          <video width="100%" height="auto" controls muted>
+            <source src="img/v1-1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <ul>
+            <li>Users share their environmental activities (tree planting, clean-up drives, sustainable living tips, etc.). Others can like, comment, and share these posts to inspire more people.</li>
+            <li>Users can create or join communities (e.g., NGOs, eco-groups) to collaborate and grow the movement.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="section-about">
+      <div class="content-about">
+        <div class="e-commerce">
+          <h2><strong>E-Commerce Side</strong></h2>
+          <video width="100%" height="auto" controls muted>
+            <source src="img/v3.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <ul>
+            <li>We offer a range of eco-friendly products (organic, reusable, biodegradable items, etc.). Users who get more likes and followers receive special discounts on these products. Products are directly sourced from manufacturers, ensuring affordability and quality.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="section-about">
+      <div class="content-about">
+        <h2><strong>Why EcoSoul?</strong></h2>
+        <video width="100%" height="auto" controls muted>
+          <source src="img/v2.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <ul>
+          <li>Encourages environmental action through social engagement.</li>
+          <li>Rewards users for positive impact with discounts on sustainable products.</li>
+          <li>Supports eco-conscious communities and NGOs.</li>
+          <li>Promotes direct-from-manufacturer sales, making eco-products more accessible.</li>
+        </ul>
+        <button href="login.html" onclick="alert('Thank you for engaging with EcoSoul!')">Join Now</button>
+      </div>
+    </div>
+
+
+
+
+    <!-- STATS SECTION -->
+    <section class="stats-section">
+      <div class="container">
+        <div class="stats-container">
+          <h2 class="stats-heading">Numbers Speak For Themselves!</h2>
+          <!-- <p>Stats Are Given Below</p> -->
+          <div class="stat-item">
+            <div class="stat-number">5,000+</div>
+            <div>Curated Products</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-number">800+</div>
+            <div>Curated Products</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-number">40+</div>
+            <div>Product Categories</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- <section class="certified-section container">
+      <div class="certified-badge">
+        <img src="#" alt="Certified Badge" />
+      </div>
+
+      <div class="certified-content">
+        <h3>Certified Products</h3>
+        <p>Click edit button to change this text. Lorem ipsum dolor sit amet</p>
+
+        <h2>We Deal With Various Quality Organic Products!</h2>
+        <img src="#" alt="Leaf Divider" class="leaf-divider" />
+
+        <div class="product-categories">
+          <div class="category-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Fresh fruits</span>
+          </div>
+
+          <div class="category-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Beauty products</span>
+          </div>
+
+          <div class="category-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Dry fruits</span>
+          </div>
+
+          <div class="category-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Milk products</span>
+          </div>
+
+          <div class="category-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Fresh vegetables</span>
+          </div>
+
+          <div class="category-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Organic honey</span>
+          </div>
+
+          <div class="category-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Dried vegetables</span>
+          </div>
+
+          <div class="category-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Organic tea</span>
+          </div>
+        </div>
+
+        <button class="shop-now-btn">Start Shopping</button>
+      </div>
+    </section> -->
+
+    <!-- Contact Us Page Content -->
+    <section class="hero" id="Contact">
+      <div class="container">
+        <h1>Get In Touch</h1>
+        <!-- <img src="#" alt="Leaf Divider" class="leaf-divider" /> -->
+        
+        <section class="contact-info container">
+          <div class="contact-card">
+            <i class="fas fa-phone"></i>
+            <p>+123 456 7890</p>
+            <p>+123 456 7890</p>
+          </div>
+          
+          <div class="contact-card">
+            <i class="fas fa-envelope"></i>
+            <p>info@example.com</p>
+            <p>support@example.com</p>
+          </div>
+          
+          <div class="contact-card">
+            <i class="fas fa-map-marker-alt"></i>
+            <p>1569 Ave, New York,</p>
+            <p>NY 10028, USA</p>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- <section class="faq-section container">
+      <h2>Frequently Asked Question!</h2>
+      <img src="#" alt="Leaf Divider" class="leaf-divider" />
+
+      <div class="faq-container">
+        <div class="faq-item">
+          <div>Pulvinar nostrud class cum facillis?</div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+
+        <div class="faq-item">
+          <div>Pon excepturi numquam, facillis?</div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+
+        <div class="faq-item">
+          <div>Pon excepturi numquam, facillis?</div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+
+        <div class="faq-item">
+          <div>Consequat nesciunt fusce facilisi?</div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+
+        <div class="faq-item">
+          <div>Pon excepturi numquam, facillis?</div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+
+        <div class="faq-item">
+          <div>Consequat nesciunt fusce facilisi?</div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </section> -->
+
+    <!-- Footer -->
+    <style>
+     
+  </style>
+
+
+  <footer class="footer">
+      <div class="footer-container">
+          <!-- Left Section -->
+          <div class="footer-left">
+              <div class="footer-logo">
+                  <img src="img/ecosoul.jpg" alt="Organic Store Logo">
+              </div>
+              <p>Proudly representing nature’s best — fresh, healthy, and eco-friendly.
+
+              </p>
+          </div>
+
+          <!-- Right Section -->
+          <div class="footer-right">
+              <h3>Download Our Mobile App</h3>
+              <p>Stay connected with ease. Access all features and updates right from your phone.</p>
+              <div class="app-buttons">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/2560px-Google_Play_Store_badge_EN.svg.png" alt="Google Play">
+                  <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"  alt="App Store">
+              </div>
+          </div>
+      </div>
+
+      <!-- Copyright Section -->
+      <div class="copyright">
+          Copyright © 2025 | GreenWorld Organic Store
+          <div class="social-icons">
+            
+                <a href="#"><ion-icon name="logo-facebook"></ion-icon></a><!-- Facebook -->
+                <a href="#"><ion-icon name="logo-twitter"></ion-icon></a> <!-- Twitter (fixed name) -->
+                <a href="#"><ion-icon name="logo-instagram"></ion-icon></a> <!-- Instagram -->
+                <a href="#"><ion-icon name="logo-whatsapp"></ion-icon></a> <!-- Whatsapp -->
+                <a href="#"><ion-icon name="logo-linkedin"></ion-icon></a>  <!-- Linkedin -->
+
+        </div>
+      </div>
+  </footer>
+
+  </body>
+</html>

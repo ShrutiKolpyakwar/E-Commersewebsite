@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/ecosoul.jpg" />
+    <title>Login | GreenWorld</title>
+    <link rel="stylesheet" href="style1.css" />
+  </head>
+  <body>
+    <section>
+      <div class="container1">
+        <h2>Welcome Back</h2>
+        <div class="auth-section">
+          <input type="email" id="email" placeholder="Email" />
+          <input type="password" id="password" placeholder="Password" />
+          <div class="btn-group">
+            <button id="signUpBtn">Sign Up</button>
+            <button id="signInBtn">Sign In</button>
+          </div>
+          <button id="logoutBtn" class="hidden">Logout</button>
+          <p id="message"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Firebase + Auth -->
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="auth.js"></script>
+  </body>
+</html>
