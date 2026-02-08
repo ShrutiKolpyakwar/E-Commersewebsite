@@ -1,0 +1,282 @@
+/* ✅ Basic Layout */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+nav {
+  background-color: #4caf50;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 20px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav input[type="text"] {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: none;
+}
+
+/* ✅ Profile */
+.profile {
+  display: flex;
+  margin-top: 20px;
+  gap: 20px;
+}
+
+.sidebar {
+  background-color: #e0f3e0;
+  padding: 20px;
+  border-radius: 10px;
+  width: 250px;
+}
+
+.profile-info {
+  flex: 1;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #4caf50;
+}
+
+.user-details h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #4caf50;
+}
+
+.user-details p {
+  margin: 5px 0;
+  color: #666;
+}
+
+#toggleStatus {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.bio {
+  margin-top: 30px;
+}
+
+/* ✅ Cart Section */
+
+.cart-dropdown {
+  position: absolute;
+  right: 10px;
+  top: 80px;
+  background-color: #8bc34a;
+  border: 1px solid #ccc;
+  width: 260px;
+  padding: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  border-radius: 8px;
+}
+
+.user-cart ul {
+  list-style: none;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.user-cart li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.cart-dropdown.hidden,
+#checkout-page.hidden {
+  display: none;
+}
+
+#cart-items,
+#checkout-products {
+  list-style: none;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#cart-items li,
+#checkout-products div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.user-cart {
+  margin-top: 30px;
+  padding: 20px;
+  border-top: 2px solid #ddd;
+}
+
+.user-cart h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+#user-cart-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+#user-cart-list li {
+  background-color: #f1f9f1;
+  margin-bottom: 5px;
+  padding: 10px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#user-cart-total {
+  font-weight: bold;
+  color: #4caf50;
+}
+
+footer {
+  text-align: center;
+  margin-top: 40px;
+  color: #888;
+  font-size: 14px;
+}
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  border: none;
+  background-color: transparent; /* No background color */
+  cursor: pointer;
+  width: 120px; /* Set a fixed width for all buttons */
+  justify-content: center; /* Center the content horizontally */
+}
+
+.action-btn span {
+  color: #000; /* Black text color */
+  font-weight: bold; /* Optional: bold text */
+}
+
+.action-btn img {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+
+.profile-stats {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; /* allows wrapping on smaller screens */
+  gap: 20px;
+  padding: 10px;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 15px;
+  align-items: left;
+}
+
+.profile-stats p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  gap : 15px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.action-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.action-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+
+
+
+
+
+
+
