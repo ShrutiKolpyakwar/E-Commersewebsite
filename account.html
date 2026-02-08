@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/ecosoul.jpg" />
+    <title>EcoSoul Profile</title>
+    <link rel="stylesheet" href="acc.css" />
+
+    <!-- Firebase Libraries -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <nav>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Shop</a></li>
+            <li><a href="hack/index.html">Community</a></li>
+          </ul>
+          <input type="text" placeholder="Search..." />
+        </nav>
+      </header>
+
+      <div class="profile">
+        <div class="sidebar">
+          <div class="profile-stats">
+            <p>Followers: <span id="followers">0</span></p>
+            <p>Following: <span id="following">0</span></p>
+            <p>Posts: <span id="posts">0</span></p>
+            <p>Sales: <span id="sales">0</span></p>
+          </div>
+          <div class="profile-actions">
+            <button class="action-btn" id="savedBtn"><img src="img/saved.png" /> Saved</button>
+            <button class="action-btn" id="archiveBtn"><img src="img/archive.png" /> Archive</button>
+            <button class="action-btn" id="activityBtn"><img src="img/activity.png" /> Your Activity</button>
+            <button class="action-btn" id="notifyBtn"><img src="img/notification.png" /> Notifications</button>
+            <button class="action-btn" id="timeBtn"><img src="img/time.png" /> Time Management</button>
+          </div>
+        </div>
+
+        <div class="profile-info">
+          <div class="profile-header">
+            <img src="/img/leaf.jpg" alt="Profile Picture" class="profile-pic" />
+            <div class="user-details">
+              <h1 id="name">user</h1>
+              <p id="username">@User#123</p>
+              <button id="toggleStatus">Switch to Seller</button>
+            </div>
+          </div>
+
+          <div class="bio">
+            <h2>About Me</h2>
+            <p id="bio">Passionate about sustainability and eco-friendly living. Sharing tips and products to help you live greener.</p>
+          </div>
+
+          <div class="user-cart">
+            <h2>My Cart</h2>
+            <ul id="user-cart-list"></ul>
+            <p>Total: ₹<span id="user-cart-total">0.00</span></p>
+          </div>
+
+          <!-- Feature displays -->
+          <div id="saved-items" style="display:none;">
+            <h3>Saved Items</h3>
+            <ul id="saved-list"></ul>
+          </div>
+
+          <div id="archived-items" style="display:none;">
+            <h3>Archived Items</h3>
+            <ul id="archived-list"></ul>
+          </div>
+
+          <div id="notifications" style="display:none;">
+            <h3>Notifications</h3>
+            <ul id="notification-list"></ul>
+          </div>
+
+          <div id="time-management" style="display:none;">
+            <h3>Time Management</h3>
+            <p>Use EcoSoul for 1 hour max today. Take a break every 20 mins 🌿</p>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>&copy; 2025 EcoSoul. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <!-- Firebase Config and Functionalities -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+      import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDcFJKbqXx50QEyQBCIwx23-MKayF55_g8",
+        authDomain: "organicstore-5572f.firebaseapp.com",
+        projectId: "organicstore-5572f",
+        storageBucket: "organicstore-5572f.appspot.com",
+        messagingSenderId: "409284670984",
+        appId: "1:409284670984:web:214c6f90fe96857dbb03bd",
+        measurementId: "G-MRC7T3DZW4",
+        databaseURL: "https://organicstore-5572f-default-rtdb.firebaseio.com"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getDatabase(app);
+
+      const savedBtn = document.getElementById("savedBtn");
+      const notifyBtn = document.getElementById("notifyBtn");
+      const timeBtn = document.getElementById("timeBtn");
+
+      const savedDiv = document.getElementById("saved-items");
+      const archiveDiv = document.getElementById("archived-items");
+      const notifyDiv = document.getElementById("notifications");
+      const timeDiv = document.getElementById("time-management");
+
+      function hideAllSections() {
+        savedDiv.style.display = "none";
+        archiveDiv.style.display = "none";
+        notifyDiv.style.display = "none";
+        timeDiv.style.display = "none";
+      }
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const uid = user.uid;
+
+          // Saved
+          savedBtn.addEventListener("click", () => {
+            hideAllSections();
+            savedDiv.style.display = "block";
+
+            const savedRef = ref(db, `users/${uid}/saved`);
+            onValue(savedRef, (snapshot) => {
+              const savedList = document.getElementById("saved-list");
+              savedList.innerHTML = "";
+              if (snapshot.exists()) {
+                const data = snapshot.val();
+                for (let key in data) {
+                  const li = document.createElement("li");
+                  li.textContent = `${data[key].name} - ₹${data[key].price}`;
+                  savedList.appendChild(li);
+                }
+              } else {
+                savedList.innerHTML = "<li>No saved items yet.</li>";
+              }
+            });
+          });
+
+          // Notifications
+          notifyBtn.addEventListener("click", () => {
+            hideAllSections();
+            notifyDiv.style.display = "block";
+
+            const notifRef = ref(db, `users/${uid}/notifications`);
+            onValue(notifRef, (snapshot) => {
+              const notificationList = document.getElementById("notification-list");
+              notificationList.innerHTML = "";
+              if (snapshot.exists()) {
+                const data = snapshot.val();
+                for (let key in data) {
+                  const li = document.createElement("li");
+                  li.textContent = data[key].message || "New Notification";
+                  notificationList.appendChild(li);
+                }
+              } else {
+                notificationList.innerHTML = "<li>No new notifications.</li>";
+              }
+            });
+          });
+
+          // Time Management
+          timeBtn.addEventListener("click", () => {
+            hideAllSections();
+            timeDiv.style.display = "block";
+          });
+
+        } else {
+          window.location.href = "login.html";
+        }
+      });
+
+      // Export Firebase stuff for global usage
+      window.auth = auth;
+      window.db = db;
+    </script>
+
+    <!-- Save Item Function -->
+    <script>
+      window.saveItem = function(name, price) {
+        if (!window.auth.currentUser) {
+          alert("Please log in to save items.");
+          return;
+        }
+
+        const uid = window.auth.currentUser.uid;
+        const newItem = { name: name, price: price };
+        const itemRef = firebase.database().ref(`users/${uid}/saved/${Date.now()}`);
+
+        firebase.database().ref(`users/${uid}/saved/${Date.now()}`).set(newItem)
+          .then(() => {
+            alert(`${name} saved successfully!`);
+          })
+          .catch((error) => {
+            console.error("Error saving item:", error);
+          });
+      };
+    </script>
+
+  </body>
+</html>
